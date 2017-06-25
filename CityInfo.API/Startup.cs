@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using System;
-
-namespace CityInfo.API
+﻿namespace CityInfo.API
 {
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Logging;
+    using System;
+
     public class Startup
     {
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -28,10 +28,7 @@ namespace CityInfo.API
                 app.UseExceptionHandler();
             }
 
-            app.Run((context) =>
-            {
-                throw new Exception("Example Exception");
-            });
+            app.Run((context) => throw new Exception("Example Exception"));
 
             //app.Run(async (context) =>
             //{

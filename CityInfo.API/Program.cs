@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using System.IO;
-
-namespace CityInfo.API
+﻿namespace CityInfo.API
 {
+    using Microsoft.AspNetCore.Hosting;
+    using System.IO;
+
     public class Program
     {
         public static void Main(string[] args)
