@@ -4,7 +4,6 @@
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
-    using System;
 
     public class Startup
     {
@@ -12,6 +11,7 @@
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -28,7 +28,9 @@
                 app.UseExceptionHandler();
             }
 
-            app.Run((context) => throw new Exception("Example Exception"));
+            app.UseMvc();
+
+            //app.Run((context) => throw new Exception("Example Exception"));
 
             //app.Run(async (context) =>
             //{
