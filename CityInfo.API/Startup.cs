@@ -28,6 +28,8 @@
                 app.UseExceptionHandler();
             }
 
+            app.UseStatusCodePages();
+
             app.UseMvc();
 
             //app.Run((context) => throw new Exception("Example Exception"));
