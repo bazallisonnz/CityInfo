@@ -2,23 +2,45 @@
 using System.Linq;
 using CityInfo.API.Models;
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.Extensions.Logging;
+using System;
+using CityInfo.API.Services;
 
 namespace CityInfo.API.Controllers
 {
     [Route("api/cities")]
     public class PointsOfInterestController : Controller
     {
+        private ILogger<PointsOfInterestController> _logger;
+        private IMailService _mailService;
+
+        public PointsOfInterestController(ILogger<PointsOfInterestController> logger, IMailService mailService)
+        {
+            _logger = logger;
+            _mailService = mailService;
+            //HttpContext.RequestServices.GetService()
+        }
+
         [HttpGet("{cityId}/PointsOfInterest")]
         public IActionResult GetPointsOfInterest(int cityId)
         {
-            var city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
-
-            if (city == null)
+            try
             {
-                return NotFound();
-            }
+                var city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
 
-            return Ok(city.PointsOfInterest);
+                if (city == null)
+                {
+                    _logger.LogInformation($"City with id {cityId} wasn't found when accessing points of onterest.");
+                    return NotFound();
+                }
+
+                return Ok(city.PointsOfInterest);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical($"Exception while getting points of onterest for city with id {cityId}.", ex);
+                return StatusCode(500, "A problem happed while hadling your request");
+            }
         }
 
         [HttpGet("{cityId}/PointsOfInterest/{id}", Name = "GetPointOfInterest")]
@@ -188,6 +210,8 @@ namespace CityInfo.API.Controllers
             {
                 return NotFound();
             }
+
+            _mailService.Send("Point of interest deleted.", $"Point of interest {existingPointOfInterest.Name} with id {existingPointOfInterest.Id} was deleted.");
 
             city.PointsOfInterest.Remove(existingPointOfInterest);
 
