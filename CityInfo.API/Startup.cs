@@ -51,8 +51,10 @@
 #else
             services.AddTransient<IMailService, CloudMailService>();
 #endif
-            var connectionString = @"Server=BAZ-IS-SPECTRE;Database=CityInfoDB;Trusted_connection=True;";
+            var connectionString = @"Server=localhost;Database=CityInfoDB;Trusted_connection=True;";
             services.AddDbContext<CityInfoContext>(o => o.UseSqlServer(connectionString));
+
+            services.AddScoped<ICityInfoRepository, CityInfoRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
