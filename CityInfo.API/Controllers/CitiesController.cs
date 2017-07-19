@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using AutoMapper;
 using CityInfo.API.Models;
 using CityInfo.API.Services;
 
@@ -22,32 +23,32 @@ namespace CityInfo.API.Controllers
         {
             var cityEntities = _cityInfoRepository.GetCities();
 
-            var results = new List<CityWtihoutPointsOfInterestDto>();
-
-            foreach (var cityEntity in cityEntities)
-            {
-                results.Add(new CityWtihoutPointsOfInterestDto
-                {
-                    Id = cityEntity.Id,
-                    Description = cityEntity.Description,
-                    Name = cityEntity.Name
-                });
-            }
-
+            var results = Mapper.Map<IEnumerable<CityWithoutPointsOfInterestDto>>(cityEntities);
+                
             return Ok(results);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetCity(int id)
+        public IActionResult GetCity(int id, bool includePointsOfInterest = false)
         {
-            var cityToReturn = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == id);
+            var cityEntity = _cityInfoRepository.GetCity(id, includePointsOfInterest);
 
-            if (cityToReturn == null)
+            if (cityEntity == null)
             {
                 return NotFound();
             }
 
-            return Ok(cityToReturn);
+            if (includePointsOfInterest)
+            {
+                var cityResult = Mapper.Map<CityDto>(cityEntity);
+
+                return Ok(cityResult);
+            }
+
+
+            var cityWtihoutPointsOfInterest = Mapper.Map<CityWithoutPointsOfInterestDto>(cityEntity);
+
+            return Ok(cityWtihoutPointsOfInterest);
         }
     }
 }

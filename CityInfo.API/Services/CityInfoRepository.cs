@@ -20,6 +20,11 @@ namespace CityInfo.API.Services
             return _context.Cities.OrderBy(c => c.Name).ToList();
         }
 
+        public bool CityExists(int cityId)
+        {
+            return _context.Cities.Any(c => c.Id == cityId);
+        }
+
         public City GetCity(int cityId, bool includePointsOfInterest)
         {
             IQueryable<City> cities = _context.Cities;
@@ -42,5 +47,20 @@ namespace CityInfo.API.Services
             return _context.PointsOfInterest.FirstOrDefault(p => p.CityId == cityId && p.Id == pointOfInterestId);
         }
 
+        public void AddPointOfInterestForCity(int cityId, PointOfInterest pointOfInterest)
+        {
+            var city = GetCity(cityId, false);
+            city.PointsOfInterest.Add(pointOfInterest);
+        }
+
+        public void DeletePointOfInterest(PointOfInterest pointOfInterest)
+        {
+            _context.PointsOfInterest.Remove(pointOfInterest);
+        }
+
+        public bool Save()
+        {
+            return (_context.SaveChanges() >= 0);
+        }
     }
 }
