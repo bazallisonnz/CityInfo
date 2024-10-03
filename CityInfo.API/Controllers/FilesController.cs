@@ -37,4 +37,27 @@ public class FilesController : ControllerBase
         var bytes = System.IO.File.ReadAllBytes(pathToFile);
         return File(bytes, contentType, Path.GetFileName(pathToFile));
     }
+
+    [HttpPost]
+    public async Task<ActionResult> CreateFile(IFormFile file)
+    {
+        // IMPORTANT: The file should be stored in a secure location (without Execute privileges), not in the web root.
+        // For this course, we are storing the file in the web root for simplicity.
+
+        // Validate the input. Put a limit on file size to avoid large uploads attacks. 
+        // Only accept .pdf files (check content-type)
+        if (file.Length == 0 || file.Length > 20971520 || file.ContentType != "application/pdf")
+        {
+            return BadRequest("No file or an invalid one has been inputted.");
+        }
+
+        // Create the file path.  Avoid using file.FileName, as an attacker can provide a
+        // malicious one, including full paths or relative paths.  
+        var path = Path.Combine(Directory.GetCurrentDirectory(), $"uploaded_file_{Guid.NewGuid()}.pdf");
+
+        await using var stream = new FileStream(path, FileMode.Create);
+        await file.CopyToAsync(stream);
+
+        return Ok("Your file has been uploaded successfully.");
+    }
 }

@@ -7,7 +7,8 @@ builder.Services.AddControllers(options =>
 {
     // This will return a 406 Not Acceptable if the client requests a format that the server does not support.
     options.ReturnHttpNotAcceptable = true;
-}).AddXmlDataContractSerializerFormatters();
+}).AddNewtonsoftJson()
+  .AddXmlDataContractSerializerFormatters();
 
 // Can add extra useful values to the ProblemDetails object.
 // Not useful for this simple case, but a good reminder of what can be done.
